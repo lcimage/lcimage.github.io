@@ -10,7 +10,7 @@ tags:								#标签
     - zcu106
 ---
 
-# 一、安装要求
+# 一、安装要求   
 
 * 主机环境
   * 8 GB RAM (recommended minimum for Xilinx tools)
