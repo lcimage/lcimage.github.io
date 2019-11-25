@@ -11,11 +11,11 @@ title: 关于我
 
 <p>
 
-<h3> 我们的博客 </h3>  
+<h3> 我的Blog </h3>  
 
 <p>
 
-是的，这个博客不仅仅可以讨论技术，我们也可以发布一些自己的所见所闻，大家可以踊跃投稿。
+是的，这个Blog不仅仅可以讨论技术，我们也可以发布一些自己的所见所闻，大家可以踊跃投稿。
 
 <p>
 
@@ -23,11 +23,11 @@ title: 关于我
 
 <p>
 
-有关于博客主题的建议和意见都可以提给我，让我们一起来打造一个精美的主题吧~ 
+有关于Blog主题的建议和意见都可以提给我，让我们一起来打造一个精美的主题吧~ 
 
 <p> 
 
-博客源码在 <a target="_blank" href= 'https://github.com/lcimage/lcimage.github.io/'>Github</a> 上，你的 Star 是我更新的动力，谢谢~
+Blog源码在 <a target="_blank" href= 'https://github.com/lcimage/lcimage.github.io/'>Github</a> 上，你的 Star 是我更新的动力，谢谢~
 
 <p> 
 
