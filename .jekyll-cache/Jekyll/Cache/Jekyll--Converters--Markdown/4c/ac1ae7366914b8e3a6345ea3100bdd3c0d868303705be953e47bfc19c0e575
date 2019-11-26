@@ -1,0 +1,137 @@
+I"'<h1 id="一安装要求">一、安装要求</h1>
+
+<ul>
+  <li>主机环境
+    <ul>
+      <li>8 GB RAM (recommended minimum for Xilinx tools)</li>
+      <li>2 GHz CPU clock or equivalent (minimum of 8 cores)</li>
+      <li>100 GB free HDD space</li>
+      <li>Supported OS:
+        <ul>
+          <li>Ubuntu Linux 16.04.3, 16.04.4 (64-bit)</li>
+          <li>CentOS 7.2, 7.3, 7.4, 7.5 (64-bit)</li>
+        </ul>
+      </li>
+      <li>PetaLinux tools require your host system<code class="highlighter-rouge"> /bin/sh </code> is bash. If you are using Ubuntu distribution and your<code class="highlighter-rouge"> /bin/sh </code> is dash, consult your system administrator to change your default host system<code class="highlighter-rouge"> /bin/sh </code> with the <em>sudo dpkg-reconfigure dash</em> command.
+在终端输入
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1、$ sudo dpkg-reconfigure dash 
+2、在弹出的界面选择“否”，禁用dash
+3、$ sudo ls -al /bin/sh
+</code></pre></div>        </div>
+        <p>如果看到<code class="highlighter-rouge">lrwxrwxrwx 1 root root 5 Jun 9 14:59 /bin/sh -&gt; /bin/bash</code>表示修改完成。</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="二更换更新源">二、更换更新源</h1>
+<h2 id="第一步">第一步</h2>
+
+<p>打开终端，输入<code class="highlighter-rouge">sudo gedit /etc/apt/sources.list</code>,将自己找到的源替换到该文件底部，将其他内容使用<code class="highlighter-rouge">#</code>注释。可以使用阿里源，清华源等等。</p>
+<blockquote>
+  <p>我在这使用的是西电源</p>
+</blockquote>
+
+<p>版本号为：</p>
+<ol>
+  <li>bionic (18.04 LTS)</li>
+  <li>artful (17.10)</li>
+  <li>zesty (17.04)</li>
+  <li>yakkety (16.10)</li>
+  <li>xenial (16.04 LTS)</li>
+  <li>trusty (14.04 LTS)</li>
+  <li>precise (12.04 LTS)</li>
+</ol>
+
+<p>以xenial为例，其它版本替换成相应版本号即可（可以用 lsb_release -a 查看当前版本代号）。 编辑/etc/apt/sources.list， 替换为以下内容（请做好备份） 请根据需要去掉 deb-src 以及 backports 和 proposed-updates 前面的注释。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>deb http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial main restricted universe multiverse
+#deb-src http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial main restricted universe multiverse
+
+deb http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-security main restricted universe multiverse
+#deb-src http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-security main restricted universe multiverse
+
+deb http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-updates main restricted universe multiverse
+#deb-src http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-updates main restricted universe multiverse
+
+#deb http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-backports main restricted universe multiverse
+#deb-src http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-backports main restricted universe multiverse
+
+#deb http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-proposed main restricted universe multiverse
+#deb-src http://linux.xidian.edu.cn/mirrors/ubuntu/ xenial-proposed main restricted universe multiverse
+</code></pre></div></div>
+<h2 id="第二步">第二步</h2>
+
+<p>更新软件源，在终端输入：
+$ <code class="highlighter-rouge">sudo apt-get update</code>。</p>
+
+<h1 id="三安装依赖库">三、安装依赖库</h1>
+
+<blockquote>
+  <p>需要root权限</p>
+</blockquote>
+
+<h2 id="第一步-1">第一步</h2>
+<p>快速安装依赖库</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo apt-get install tofrodos  iproute2 gawk
+$ sudo apt-get install xvfb
+$ sudo apt-get install gcc git make 
+$ sudo apt-get install net-tools libncurses5-dev 
+$ sudo apt-get install zlib1g-dev zlib1g-dev:i386 libssl-dev flex bison libselinux1  
+$ sudo apt-get install gnupg wget diffstat chrpath socat xterm
+$ sudo apt-get install autoconf libtool tar unzip texinfo zlib1g-dev gcc-multilib
+$ sudo apt-get install build-essential libsdl1.2-dev libglib2.0-dev
+$ sudo apt-get install screen pax gzip tar
+</code></pre></div></div>
+<p>##第二步
+安装<code class="highlighter-rouge">tpfp</code>库</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo apt-get install tftpd tftp openbsd-inetd
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo gedit /etc/inetd.conf
+% 在文件内复制如下内容
+tftp dgram udp wait nobody /usr/sbin/tcpd /usr/sbin/in.tftpd /tftproot
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mkdir /tftproot
+$ sudo chmod 777 /tftproot
+$ sudo /etc/init.d/openbsd-inetd restart
+$ sudo netstat -an | more | grep udp
+</code></pre></div></div>
+<p>如果看到如下显示，表示成功。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>udp        0      0 0.0.0.0:69              0.0.0.0:*
+</code></pre></div></div>
+<h1 id="四安装petalinux">四、安装PetaLinux</h1>
+
+<blockquote>
+  <p>安装软件时需要是普通用户，并且Vivado、XSDK和PetaLinux的版本必须一致。</p>
+</blockquote>
+
+<h2 id="第一步-2">第一步</h2>
+<p>从官网下载对应版本的PetaLinux版本，至于怎么去官网下载，大家应该都清楚吧，此处就不展示了。</p>
+
+<h2 id="第二步-1">第二步</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir -p opt/pkg/petalinux/2018.3
+
+$ ./petalinux-v2018.3-final-installer.run /home/pp/opt/pkg/petalinux/2018.3
+</code></pre></div></div>
+<ul>
+  <li>如果新建的文件夹权限不够，需要使用<code class="highlighter-rouge">chmod -R 700 opt/</code></li>
+  <li>一旦开始安装，不能复制或者移动所安装文件夹的内容</li>
+  <li>安装过程会出现三个license文档，键盘输入<code class="highlighter-rouge">q</code>键关闭</li>
+</ul>
+
+<h1 id="五设置petalinux工作环境变量">五、设置PetaLinux工作环境变量</h1>
+
+<h2 id="第一步-3">第一步</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo gedit ~/.bashrc
+
+%添加如下内容，并保存
+source &lt;path-to-installed-PetaLinux&gt;/settings.sh
+</code></pre></div></div>
+<h2 id="第二步-2">第二步</h2>
+<p>验证环境变量成功</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo $PETALINUX
+%出现如下信息，即成功
+/opt/pkg/petalinux
+</code></pre></div></div>
+
+:ET

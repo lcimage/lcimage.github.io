@@ -1,0 +1,28 @@
+I"�<blockquote>
+  <p>在64位windows8或者8.1上安装xilinx ise之后，加载 licence或者保存文件的时候，ise应用程序就会崩溃，出现闪退的情况。</p>
+</blockquote>
+
+<p>修复方法：</p>
+
+<h1 id="第一步">第一步：</h1>
+<p>找到xilinx安装文件下的子文件，我的是安装在D盘。
+<strong>D:\Xilinx\14.4\ISE_DS\ISE\lib\nt64</strong></p>
+
+<p>在这个文件夹中搜索文件 libPortability
+会出来两个文件
+<code class="highlighter-rouge">libPortabilityNOSH.dll</code>
+<code class="highlighter-rouge">libPortability.dll</code></p>
+
+<p>将<code class="highlighter-rouge">libPortability.dll</code>重名为<code class="highlighter-rouge">libPortability.dll.orig</code>
+将 <code class="highlighter-rouge">libPortabilityNOSH.dll</code> 复制一份，然后将这个复制重命名为<code class="highlighter-rouge">libPortability.dll</code></p>
+
+<h1 id="第二步">第二步：</h1>
+<p>将第一步中的<code class="highlighter-rouge">libPortabilityNOSH.dll</code>复制一份放到xilinx安装文件夹下的子文件夹
+<strong>D:\Xilinx\14.4\ISE_DS\common\lib\nt64</strong></p>
+
+<p>然后在上述文件中：
+将<code class="highlighter-rouge">libPortability.dll</code>重名为<code class="highlighter-rouge">libPortability.dll.orig</code>
+将<code class="highlighter-rouge">libPortabilityNOSH.dll</code>重命名为<code class="highlighter-rouge">libPortability.dll</code></p>
+
+<p>这样就可以运行ise了，可以加载license了，也可以保存文件了。</p>
+:ET

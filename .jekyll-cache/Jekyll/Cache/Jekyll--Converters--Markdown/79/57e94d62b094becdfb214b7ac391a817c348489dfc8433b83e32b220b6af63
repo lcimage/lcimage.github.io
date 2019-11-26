@@ -1,0 +1,196 @@
+I"W"<blockquote>
+  <p>本篇文章参考米联客战神开发板及开发手册进行书写，在此表示感谢。
+做过PCIE的朋友都知道，我们实际使用PCIE的时候，数据量很大，所以都采用DMA模式进行传输，所以今天小编着重讲解DMA模式工程的建立与上板测试。</p>
+</blockquote>
+
+<blockquote>
+  <p>温馨提示：对于每次下载完程序后，都需要重启电脑，切记！！！</p>
+</blockquote>
+
+<blockquote>
+  <p>由于所购买的开发板是米联客开发，故板子带的demo做为工程参考，在此表示感谢！</p>
+</blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>电脑系统</th>
+      <th>开发工具</th>
+      <th>开发软件</th>
+      <th>设计工程</th>
+      <th>上位机修改软件</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>win7</td>
+      <td>ISE14.7</td>
+      <td>windriver10.21</td>
+      <td>PCIE的DMA模式</td>
+      <td>VS 2015</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>看一下DMA模式下的PCIE和CPU之间的架构</li>
+</ul>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7y81oc9oj20iz091gll.jpg" alt="" /></p>
+
+<h1 id="一pcie工程创建">一、PCIE工程创建</h1>
+
+<p>对于开发者而言，我们学FPGA设计基本都是出自伟大的xilinx，那么对于PCIE DMA的设计也是通过xilinx官网所给的BMD修改所得，那么如何把BMD工程改造成我们想要的DMA模式就变成了我们今天的重头戏。</p>
+<h2 id="第一步">第一步</h2>
+
+<p>登录xilinx官网，在搜索框中搜索<code class="highlighter-rouge">XAPP1052</code>字样，（XAPP1052是xilinx官方专门为开发者提供的PCIE DMA的demo，里面包含PCIE DMA开发的verilog代码以及上位机的驱动软件），开发者需要下载XAPP1052.pdf文件以及XAPP1052.zip，如图1所示，</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7oo3x03yj20x60eimyo.jpg" alt="" /></p>
+
+<h2 id="第二步">第二步</h2>
+<p>对XAPP1052.zip进行解压，得到以下文件，如图2所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7pcd9u7oj20hj069glt.jpg" alt="" /></p>
+
+<h2 id="第三步">第三步</h2>
+
+<p>我们新建一个文件夹，重新生成一个PCIE IP(生成方式和以前博文相同，S6 的PCIE工程，读者可以查看以前笔记)</p>
+
+<h2 id="第四步">第四步</h2>
+<p>打开刚才下载的文件，进入BMD文件夹，将common文件夹，BMD_32_RX_ENGINE,BMD_32_TX_ENGINE、s6_pci_exp_32b_app三个文件一同拷贝到刚才新建的工程文件中，如图3所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7pu4508dj20jy08mgmc.jpg" alt="" /></p>
+
+<p>存放新建如下工程文件（此工程自行创建,主要这篇博文主要是S6的PCIE），如图4所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7pomh8k8j20mh08hmxw.jpg" alt="" /></p>
+
+<h2 id="第五步">第五步</h2>
+<p>将刚才新建rtl文件夹中的所有文件以及example design中的ucf文件添加至工程中，如图5所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7q64j0i3j20g70dugmm.jpg" alt="" /></p>
+
+<h2 id="第六步">第六步</h2>
+<p>将BMD_PCIE_20.v文件设置为全局文件，如图6所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7r403j1mj20wv0bijub.jpg" alt="" /></p>
+
+<blockquote>
+  <p>对于刚才添加的ucf文件一定要核对原理图，特别是复位，时钟这些信号。</p>
+</blockquote>
+
+<h1 id="二修改部分代码">二、修改部分代码</h1>
+
+<p>我们阅读DMA代码后发现，此工程读写为固定数据，而我们本次测试，需要将数据连续读写，并存入ram中，那么我们如何修改代码呢？接下来我们需要对收发引擎做修改，即改动<code class="highlighter-rouge">BMD_RX_ENGINE</code>和<code class="highlighter-rouge">BMD_TX_ENGINE</code>文件。</p>
+<h2 id="修改bmd_rx_engine">修改BMD_RX_ENGINE</h2>
+
+<p>官方提供的源码中是将DMA写入的数据和<code class="highlighter-rouge">cpld_data_i</code>进行对比，而我们需要将DMA写入的数据trn_rd存入ram中，因此对代码做如下修改，如图7所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7x9zb77tj21fs0petbb.jpg" alt="" /></p>
+
+<p>添加ram写部分代码，如图8所示。</p>
+
+<p><img src="https://ws1.sinaimg.cn/large/ebdd169ely1fv82cdwip3j21g30l740l.jpg" alt="" /></p>
+
+<h2 id="修改bmd_tx_engine">修改BMD_TX_ENGINE</h2>
+
+<p>官方提供的例程会将写入mwr_data_i寄存器中的数据送至PCIE的读数据端口，完成DMA的读，而我们需要把ram中的数据读出来送给PCIE的读数据端口，如图9所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7xf3opr1j21fh0nmdie.jpg" alt="" /></p>
+
+<p>添加ram读部分代码，如图10所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv826seykmj21fu0iv76m.jpg" alt="" /></p>
+
+<p>到此为止，我们代码修改完成，开发者可以使用此工程完成PC与PCIE之间的通信。</p>
+
+<h1 id="三上板调试">三、上板调试</h1>
+
+<h2 id="第一步-1">第一步</h2>
+<p>首先需要添加cdc文件，抓取我们要看的信号，添加以下信号，如图11所示。</p>
+
+<ul>
+  <li>添加驱动时钟</li>
+</ul>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7quoc4nkj20mn0inq49.jpg" alt="" /></p>
+
+<ul>
+  <li>添加查看信号（信号着实有点多，就不一一列举，读者可根据自己需要添加相应信号即可）</li>
+</ul>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7qvt1m60j20c80h3js3.jpg" alt="" /></p>
+
+<h2 id="第二步-1">第二步</h2>
+<p>将我们的工程进行编译，并生成bit文件，然后根据上篇博文的方式将代码烧写至SPI FLASH，之后再重启电脑。</p>
+
+<h2 id="第三步-1">第三步</h2>
+
+<p>打开chipscope，并点击jtag连接，同时添加我们的cdc文件，如图12所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7r52rzgbj20c50bk0to.jpg" alt="" /></p>
+
+<p>添加步骤如下，如图13所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7r6eguf5j20vo0f776b.jpg" alt="" /></p>
+
+<h2 id="第四步-1">第四步</h2>
+
+<p>在FPGA的Chipscope中我们设置触发条件为EP_TX中的ram_ce_r为上升沿触发，然后运行，如图14所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7stuss0mj20x30gq0ua.jpg" alt="" /></p>
+
+<h2 id="第五步-1">第五步</h2>
+
+<p>打开安装windriver的文件夹，找到<strong>msdev_2010</strong>文件夹,如图15所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7r9odep6j20mv093q4e.jpg" alt="" /></p>
+
+<h2 id="第六步-1">第六步</h2>
+
+<p>我们利用vs 2015 打开msdev_2010中的工程，对其中的virtex5_diag文件做修改，读者可自行根据自己需求进行修改即可（我们在里面设置了递增数，速度测试等代码），对其进行编译，出现命令行，按提示操作。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7s9xeyq0j20rl0ic75v.jpg" alt="" /></p>
+
+<h3>①</h3>
+<p>在Enter option中键入7，选择DMA模式调试，如图16所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7satfm3jj20rj0i80ue.jpg" alt="" /></p>
+
+<h3 id="-1">②</h3>
+
+<p>键入1打开DMA设备，如图17所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7sc5x64ej20rj0i7404.jpg" alt="" /></p>
+
+<h3 id="-2">③</h3>
+
+<p>选择DMA的读写方式，键入2设置为DMA写测试，同时设置DMA的TLP包个数和TLP包的数据（递增数）。设置完即可完成DMA的写操作，如图18所示：</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7sfeedacj20rg0evdgy.jpg" alt="" /></p>
+
+<h3 id="-3">④</h3>
+<p>查看chipscope的信号波形，如图19所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7shmp0ebj20or09mgrf.jpg" alt="" /></p>
+
+<h2 id="第七步">第七步</h2>
+
+<p>在FPGA的Chipscope中我们设置触发条件为EP_RX中的ram_ce上升沿触发，并运行，如图20所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7ss1w692j20xw0gvwg6.jpg" alt="" /></p>
+
+<h2 id="第八步">第八步</h2>
+<p>在命令行操作，选择读数据即可，步骤与第六步中的类似。得到结果如图21所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7so3z183j20re0eq3zj.jpg" alt="" /></p>
+
+<p>查看chipscope中的波形，如图22所示。</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/ebdd169ely1fv7sprdvixj20ou0710wn.jpg" alt="" /></p>
+
+<blockquote>
+  <p>至此对于S6的PCIE所有工程实现介绍到这，对于内容的不容，小编会在提高的过程中添加部分内容，望各位读者辩证地阅读，后期小编将要调试7系列的PCIE，也会做相应的笔记。</p>
+</blockquote>
+
+:ET

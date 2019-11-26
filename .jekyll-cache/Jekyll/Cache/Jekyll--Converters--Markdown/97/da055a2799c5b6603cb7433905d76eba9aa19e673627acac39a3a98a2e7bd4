@@ -1,0 +1,80 @@
+I"�<p>一个 FPGA 开发者，喜欢捣腾一些新技术。</p>
+<p>
+平时喜欢搞科研，对底层硬件比较感兴趣，没事了就爱浪，对美剧比较感兴趣，尤其是Marvel和DC的Superhero。
+<p>
+了解一些 前端 基本概念和 C++ 的简单用法。
+
+<p>
+
+<h3> 我的Blog </h3>  
+
+<p>
+
+是的，这个Blog不仅仅可以讨论技术，我们也可以发布一些自己的所见所闻，大家可以踊跃投稿。
+
+<p>
+
+博主也是科研小白，正在知识的海洋里尽情狗刨，加入我的行列，让我们上九天揽月，下海底捞鱼！！！
+
+<p>
+
+有关于Blog主题的建议和意见都可以提给我，让我们一起来打造一个精美的主题吧~ 
+
+<p> 
+
+Blog源码在 <a target="_blank" href="https://github.com/lcimage/lcimage.github.io/">Github</a> 上，你的 Star 是我更新的动力，谢谢~
+
+<p> 
+
+<p> 
+
+<p> 
+
+
+<section class="post-comments">
+
+<!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80NzY4MC8yNDE3OA==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+  
+         if (typeof LivereTower === 'function') { return; }
+  
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+  
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+  <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+  </div>
+  <!-- City版安装代码已完成 -->
+  <!-- 
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/about/";
+        this.page.identifier = "/about/";
+    };
+    var disqus_shortname = 'cliu_1995';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+
+   -->
+
+</section>
+
+
+</p></p></p></p></p></p></p></p></p></p>
+:ET
