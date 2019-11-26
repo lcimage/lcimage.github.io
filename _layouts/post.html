@@ -22,9 +22,5 @@ layout: default
 
 {% include new-old.html %}
 {% include comments.html %}
-
-  <!-- 在正文开头添加网易云音乐插件 -->
-  {% if page.music-id %}
-    {% include cloud-music.html %}
-  {% endif %} 
-  {{ content }}
+{% include cloud-music.html %}
+ 
